@@ -21,18 +21,19 @@ skada_järnhård_näve = 2
 skada_kvick_spark = 1
 
 # Att göra: Programmera ett stridssystem utan vapen
+print ("\n\n" + Fore.BLUE + "GLADIATORERNA" + Style.RESET_ALL)
+print (Fore.YELLOW + "=============" + Style.RESET_ALL)
+print ("Du är gladiatorn " + Fore.GREEN + "Rikke" + Style.RESET_ALL + ", nu ska du slåss mot gladiatorn " + Fore.RED + "Postumius." + Style.RESET_ALL)
+print ("Ni befinner er på en romersk arena omgivna av en förväntansfull publik")
+print ("Ni har inga vapen eller rustning utan du är klädd enbart i ett par")
+print ("korta läderbyxor, ett par pälsstövlar och armband gjorda av läder.")
+print ("Din bara bronsfärgade bringa lyses upp av den starka solen.")
+print ("Publiken som sitter runt omkring er ser förväntansfulla ut.")
+print ("Postemius ser ut att göra sig redo att gå till anfall.")
+print ("Striden kan börja.\n")
 
-print("Du är gladiatorn " + Fore.RED + "Rikke" + Style.RESET_ALL + ", nu ska du slåss mot gladiatorn Postumius.")
-print("Ni befinner er på en romersk arena omgivna av en förväntansfull publik")
-print("Ni har inga vapen eller rustning utan du är klädd enbart i ett par")
-print("korta läderbyxor, ett par pälsstövlar och armband gjorda av läder.")
-print("Din bara bronsfärgade bringa lyses upp av den starka solen.")
-print("Publiken som sitter runt omkring er ser förväntansfulla ut.")
-print("Postemius ser ut att göra sig redo att gå till anfall.")
-print("Striden kan börja.\n")
-
-print(f"Du har just nu {spelarens_hp} hälsopoäng kvar.")
-print(f"Din fiende har just nu {fiendens_hp} hälsopoäng kvar.")
+print (f"Du har just nu {spelarens_hp} hälsopoäng kvar.")
+print (f"Din fiende har just nu {fiendens_hp} hälsopoäng kvar.")
 
 # Järnhård näve ger 2 skada och -2 träffchans
 # Kvick spark ger 1 skada och +2 träffchans
