@@ -1,18 +1,10 @@
-import random, colorama
+import random, colorama, msvcrt
 from colorama import Fore, Style
 
 # Initierar colorama (speciellt viktigt på Windows)
 colorama.init()
 
-#print(Fore.RED + "Detta är röd text" + Style.RESET_ALL)
-#print(Fore.GREEN + "Detta är grön text" + Style.RESET_ALL)
-#print(Fore.YELLOW + "Detta är gul text" + Style.RESET_ALL)
-
 ### VARIABLER I SPELET ###
-
-# Övrigt
-strid_pågår = True
-runda = 1
 
 # Hälsopoäng
 spelarens_hp = 10
@@ -23,6 +15,11 @@ spelarens_träffchans = 5
 
 # Träffchans fienden
 fiendens_träffchans = 3
+
+# Övrigt
+strid_pågår = True
+runda = 1
+
 
 ### Attacker ###
 
@@ -37,7 +34,7 @@ högsta_skada_kvick_spark = 2
 modifiering_träffchans_kvick_spark = 2 
 
 
-# Att göra: Programmera ett stridssystem utan vapen
+### SPELET BÖRJAR HÄR ###
 print ("\n\n" + Fore.BLUE + "GLADIATORERNA" + Style.RESET_ALL)
 print (Fore.YELLOW + "=============" + Style.RESET_ALL)
 print ("Du är gladiatorn " + Fore.GREEN + "Rikke" + Style.RESET_ALL + ", nu ska du slåss mot gladiatorn " + Fore.RED + "Postumius." + Style.RESET_ALL)
@@ -49,6 +46,9 @@ print ("Publiken som sitter runt omkring er ser förväntansfulla ut.")
 print ("Postemius ser ut att göra sig redo att gå till anfall.")
 print ("Striden kan börja.\n")
 
+print("\nTryck på valfri tangent för att fortsätta...")
+msvcrt.getch()  # Väntar på att användaren trycker på en tangent
+print ("\n")
 
 while (strid_pågår):
     Fore.RED + "Detta är röd text" + Style.RESET_ALL
@@ -56,18 +56,22 @@ while (strid_pågår):
     print (Fore.RED + "Ni spelar runda nummer " + Fore.YELLOW + str(runda) + Style.RESET_ALL + ".")
     runda = runda + 1
     
-    print (f"\nDu har just nu {spelarens_hp} hälsopoäng kvar.")
-    print (f"Din fiende har just nu {fiendens_hp} hälsopoäng kvar.")
+    print ("\nDu har just nu " + Fore.GREEN + str(spelarens_hp) + Style.RESET_ALL + " hälsopoäng kvar.")
+    print ("Din fiende har just nu " + Fore.RED + str(fiendens_hp) + Style.RESET_ALL + " hälsopoäng kvar.")
 
-    # Järnhård näve ger 2 och 4 i skada och -2 träffchans
-    # Kvick spark ger mellan 1 och 3 i skada och +2 träffchans
+    # Regler för attacker
+    print ("\nDu har följande attacker:")
+    print (f"Järnhård näve: gör mellan {lägsta_skada_järnhård_näve} och {högsta_skada_järnhård_näve} i skada. Ändrar träffchansen med {modifiering_träffchans_järnhård_näve}.")
+    print (f"Kvick spark: gör mellan {lägsta_skada_kvick_spark} och {högsta_skada_kvick_spark} i skada. Ändrar träffchansen med {modifiering_träffchans_kvick_spark}.")
+
+    # Spelaren får välja attack.
     spelarens_val = input ("\nVill du attackera med din järnhårda " + Fore.GREEN + "näve " + Style.RESET_ALL + "eller med din kvicka " + Fore.YELLOW + "spark? " + Style.RESET_ALL).lower()
 
-    
+    # Slumpar ett tal mellan 1 och 10
     T10 = random.randint(1, 10)
 
     if (spelarens_val == "näve"):
-        print ("Du slår hårt mot din motståndare.") 
+        print ("\nDu slår hårt mot din motståndare.") 
         if (T10 <= spelarens_träffchans + modifiering_träffchans_järnhård_näve):   
             print ("Och träffar!")
 
@@ -80,7 +84,7 @@ while (strid_pågår):
         else:
             print ("Och missar!")
     elif (spelarens_val == "spark"):
-        print ("Du skickar iväg en snabb spark.")
+        print ("\nDu skickar iväg en snabb spark.")
         if (T10 <= spelarens_träffchans + modifiering_träffchans_kvick_spark):
             print ("Och träffar!")
 
@@ -92,6 +96,9 @@ while (strid_pågår):
             print (f"Din fiende har nu {fiendens_hp} hälsopoäng kvar.")
         else:
             print ("Och missar!")        
+
+    print("\nTryck på valfri tangent för att fortsätta...")
+    msvcrt.getch()  # Väntar på att användaren trycker på en tangent
 
     ### FIENDEN ATTACKERAR! ###
 
@@ -131,8 +138,11 @@ while (strid_pågår):
                 print (f"Du har nu {spelarens_hp} hälsopoäng kvar.")
             else:
                 print ("Och missar!")
-
-
+    
+    if (fiendens_hp > 0):   # Hoppas över om spelaren redan vunnit. 
+        print("\nTryck på valfri tangent för att fortsätta...")
+        msvcrt.getch()  # Väntar på att användaren trycker på en tangent
+    
     print ("\n")    # Extra radbrytning.
     
     # Kontrollerar om det är dags att avsluta striden
