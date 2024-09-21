@@ -14,7 +14,7 @@ fiendens_hp = 6
 spelarens_träffchans = 5
 
 # Träffchans fienden
-fiendens_träffchans = 3
+fiendens_träffchans = 5
 
 # Övrigt
 strid_pågår = True
@@ -61,8 +61,8 @@ while (strid_pågår):
 
     # Regler för attacker
     print ("\nDu har följande attacker:")
-    print (f"Järnhård näve: gör mellan {lägsta_skada_järnhård_näve} och {högsta_skada_järnhård_näve} i skada. Ändrar träffchansen med {modifiering_träffchans_järnhård_näve}.")
-    print (f"Kvick spark: gör mellan {lägsta_skada_kvick_spark} och {högsta_skada_kvick_spark} i skada. Ändrar träffchansen med {modifiering_träffchans_kvick_spark}.")
+    print (f"Järnhård näve: gör mellan {lägsta_skada_järnhård_näve} och {högsta_skada_järnhård_näve} i skada. Träffchansen är {spelarens_träffchans + modifiering_träffchans_järnhård_näve} av 10.")
+    print (f"Kvick spark: gör mellan {lägsta_skada_kvick_spark} och {högsta_skada_kvick_spark} i skada. Träffchansen är {spelarens_träffchans + modifiering_träffchans_kvick_spark} av 10.")
 
     # Spelaren får välja attack.
     spelarens_val = input ("\nVill du attackera med din järnhårda " + Fore.GREEN + "näve " + Style.RESET_ALL + "eller med din kvicka " + Fore.YELLOW + "spark? " + Style.RESET_ALL).lower()
