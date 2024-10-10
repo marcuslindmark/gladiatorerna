@@ -25,7 +25,7 @@ FIENDENS_TRÄFFCHANS = 5
 # Järnhård näve
 LÄGSTA_SKADA_JÄRNHÅRD_NÄVE = 2
 HÖGSTA_SKADA_JÄRNHÅRD_NÄVE = 3
-MODIFIERING_TRÄFFCHANS_JÄRNHÅRD_NÄVE = -2 
+MODIFIERING_TRÄFFCHANS_JÄRNHÅRD_NÄVE = -1 
 
 # Kvick spark
 LÄGSTA_SKADA_KVICK_SPARK = 1
@@ -33,7 +33,16 @@ HÖGSTA_SKADA_KVICK_SPARK = 2
 MODIFIERING_TRÄFFCHANS_KVICK_SPARK = 2
 
 # Kortsvärd
-MODIFIERING_SKADA_KORTSVÄRD = 1
+LÄGSTA_SKADA_KORTSVÄRD = 2
+HÖGSTA_SKADA_KORTSVÄRD = 4
+MODIFIERING_TRÄFFCHANS_KORTSVÄRD = -1
+SKADA_KORTSVÄRD = [2, 3, 4]
+
+# Lasso
+fiende_fångad = False                   # Blir True om spelaren träffar med lassot
+modifiering_träffchans_lasso = 0        # Om fienden är fångad ökar detta värde
+skada_lasso = 0                         # Om fienden är fångad ökar detta värde
+lasso_räknare = -1                      # Håller reda på hur många rundor som fienden är fångad
 
 # Övrigt
 ogiltigt_val = False
@@ -90,54 +99,105 @@ def fienden_väljer(spelarens_hp):
 
 
 # Funktion för att hantera spelarens val av attack.
-def spelaren_väljer(fiendens_hp):
+def spelaren_väljer(fiendens_hp, fiende_fångad, modifiering_träffchans_lasso, skada_lasso, lasso_räknare):
     ogiltigt_val = True
     while ogiltigt_val:
         # Spelaren får välja attack.
-        spelarens_val = input ("\nVill du attackera med din järnhårda " + Fore.GREEN + "näve " + Style.RESET_ALL + "eller med din kvicka " + Fore.YELLOW + "spark? " + Style.RESET_ALL).lower()
+        spelarens_val = input ("\nVilken attack väljer du? ").lower()
 
         # Slumpar ett tal mellan 1 och 10
         T10 = random.randint(1, 10)    
-            
+
+        ### JÄRNHÅRD NÄVE ###    
         if (spelarens_val == "näve"):
             ogiltigt_val = False
-            print ("\nDu slår hårt mot din motståndare.") 
-            if (T10 <= SPELARENS_TRÄFFCHANS + MODIFIERING_TRÄFFCHANS_JÄRNHÅRD_NÄVE):   
+            print ("\nDu slår hårt mot din motståndare.")
+            if (fiende_fångad == True):
+                print (f"Eftersom fienden är insnärjd i ditt lasso ökar din träffchans med {modifiering_träffchans_lasso}.") 
+
+            if (T10 <= SPELARENS_TRÄFFCHANS + MODIFIERING_TRÄFFCHANS_JÄRNHÅRD_NÄVE + modifiering_träffchans_lasso):   
                 print ("Och träffar!")
 
                 # Beräknar skadan och berättar för spelaren vad som händer
                 skada_järnhård_näve = random.randint(LÄGSTA_SKADA_JÄRNHÅRD_NÄVE, HÖGSTA_SKADA_JÄRNHÅRD_NÄVE)
                 print (f"Du gör {skada_järnhård_näve} hälsopoäng i skada.")
+                
+                # Om fienden är fångad av ett lasso tar den extra skada
+                if fiende_fångad == True:
+                    print (f"Eftersom fienden är fångad får den {skada_lasso} extra i skada.")
 
-                fiendens_hp = fiendens_hp - skada_järnhård_näve
+                fiendens_hp = fiendens_hp - (skada_järnhård_näve + skada_lasso)
                 print (f"Din fiende har nu {fiendens_hp} hälsopoäng kvar.")
             else:
                 print ("Och missar!")
+        ### KVICK SPARK ### 
         elif (spelarens_val == "spark"):
             ogiltigt_val = False
             print ("\nDu skickar iväg en snabb spark.")
-            if (T10 <= SPELARENS_TRÄFFCHANS + MODIFIERING_TRÄFFCHANS_KVICK_SPARK):
+            
+            if (T10 <= SPELARENS_TRÄFFCHANS + MODIFIERING_TRÄFFCHANS_KVICK_SPARK + modifiering_träffchans_lasso):
                 print ("Och träffar!")
 
                 # Beräknar skadan och berättar för spelaren vad som händer
                 skada_kvick_spark = random.randint(LÄGSTA_SKADA_KVICK_SPARK, HÖGSTA_SKADA_KVICK_SPARK)
                 print (f"Du gör {skada_kvick_spark} hälsopoäng i skada.")
 
-                fiendens_hp = fiendens_hp - skada_kvick_spark
+                # Om fienden är fångad av ett lasso tar den extra skada
+                if fiende_fångad == True:
+                    print (f"Eftersom fienden är fångad får den {skada_lasso} extra i skada.")
+
+                fiendens_hp = fiendens_hp - (skada_kvick_spark + skada_lasso)
                 print (f"Din fiende har nu {fiendens_hp} hälsopoäng kvar.")
             else:
                 print ("Och missar!")
+        ### KORTSVÄRD ###        
+        elif (spelarens_val == "kortsvärd" and vapen == "kortsvärd"):
+            ogiltigt_val = False
+            print ("\nDu hugger med ditt kortsvärd.")
+            if (T10 <= SPELARENS_TRÄFFCHANS + MODIFIERING_TRÄFFCHANS_KORTSVÄRD + modifiering_träffchans_lasso):
+                print ("Och träffar!")
+
+                # Beräknar skadan och berättar för spelaren vad som händer
+                skada_kortsvärd = random.choice(SKADA_KORTSVÄRD)
+                print (f"Du gör {skada_kortsvärd} hälsopoäng i skada.")
+ 
+                # Om fienden är fångad av ett lasso tar den extra skada
+                if fiende_fångad == True:
+                    print (f"Eftersom fienden är fångad fick den {skada_lasso} extra i skada.")
+
+                fiendens_hp = fiendens_hp - (skada_kortsvärd + skada_lasso)
+                print (f"Din fiende har nu {fiendens_hp} hälsopoäng kvar.")
+            else:
+                print ("Och missar!")
+        ### LASSO ###        
+        elif (spelarens_val == "lasso" and vapen == "lasso" and fiende_fångad == False):
+            ogiltigt_val = False
+            print ("\nDu svingar din lasso för att fånga din fiende.")
+            if (T10 <= SPELARENS_TRÄFFCHANS + modifiering_träffchans_lasso):
+                # Uppdaterar variablerna för lassot
+                fiende_fångad = True
+                modifiering_träffchans_lasso = 2
+                skada_lasso = 1
+                lasso_räknare = 2
+            
+                # Berättar för spelaren vad som händer
+                print ("Och träffar!")
+                print (f"Din fiende är fångad vilket ökar din träffchans med {modifiering_träffchans_lasso} och skada med {skada_lasso} på alla attacker du gör nästa runda.")
+            else:
+                print ("Och missar!")
         else:
-            print ("Ogiltigt val. Skriv antingen näve eller spark.")
+            print ("Ogiltigt val.")
             ogiltigt_val = True
     
     tryck_på_valfri_tangent()
 
-    return fiendens_hp  # Returnerar det uppdaterade värdet
+    # Returnerar de uppdaterade värdena
+    return fiendens_hp, fiende_fångad, modifiering_träffchans_lasso, skada_lasso, lasso_räknare  
 
-def visa_introtext():
+# Funktion som visar en introtext
+def visa_introtext(vapen):
     print ("Ni befinner er på en romersk arena omgivna av en förväntansfull publik")
-    print ("Du håller hårt i ditt vapen, men har ingen rustning utan du är klädd i ett par")
+    print (f"I din hand har du vapnet {vapen}. Du är klädd i ett par")
     print ("korta läderbyxor, ett par pälsstövlar och armband gjorda av läder.")
     print ("Din bara bronsfärgade bringa lyses upp av den starka solen.")
     print ("Publiken som sitter runt omkring er ser förväntansfulla ut.")
@@ -161,8 +221,15 @@ def visa_hälsopoäng():
 # Funktion som berättar vilka attacker det är som spelaren kan göra
 def visa_tillgängliga_attacker():    
     print ("\nDu har följande attacker:")
-    print (f"Järnhård näve: gör mellan {LÄGSTA_SKADA_JÄRNHÅRD_NÄVE} och {HÖGSTA_SKADA_JÄRNHÅRD_NÄVE} i skada. Träffchansen är {SPELARENS_TRÄFFCHANS + MODIFIERING_TRÄFFCHANS_JÄRNHÅRD_NÄVE} av 10.")
-    print (f"Kvick spark: gör mellan {LÄGSTA_SKADA_KVICK_SPARK} och {HÖGSTA_SKADA_KVICK_SPARK} i skada. Träffchansen är {SPELARENS_TRÄFFCHANS + MODIFIERING_TRÄFFCHANS_KVICK_SPARK} av 10.")
+    print (f"Järnhård näve: gör mellan {LÄGSTA_SKADA_JÄRNHÅRD_NÄVE} och {HÖGSTA_SKADA_JÄRNHÅRD_NÄVE} i skada. Träffchansen är {SPELARENS_TRÄFFCHANS + MODIFIERING_TRÄFFCHANS_JÄRNHÅRD_NÄVE + modifiering_träffchans_lasso} av 10.")
+    print (f"Kvick spark: gör mellan {LÄGSTA_SKADA_KVICK_SPARK} och {HÖGSTA_SKADA_KVICK_SPARK} i skada. Träffchansen är {SPELARENS_TRÄFFCHANS + MODIFIERING_TRÄFFCHANS_KVICK_SPARK + modifiering_träffchans_lasso} av 10.")
+    if (vapen == "kortsvärd"):
+        print (f"Kortsvärd: gör mellan {LÄGSTA_SKADA_KORTSVÄRD} och {HÖGSTA_SKADA_KORTSVÄRD} i skada. Träffchansen är {SPELARENS_TRÄFFCHANS + MODIFIERING_TRÄFFCHANS_KORTSVÄRD + modifiering_träffchans_lasso} av 10.")
+    elif (vapen == "lasso" and fiende_fångad == False):
+        print (f"Lasso: fångar in din motståndare och ökar din träffchans och skada så länge som fienden är fångad.")
+    
+    if (fiende_fångad == True):
+                print (f"Eftersom fienden är insnärjd i ditt lasso ökar din träffchans med {modifiering_träffchans_lasso}.")
 
 # Funktion som lägger in en paus i spelet            
 def tryck_på_valfri_tangent():            
@@ -171,24 +238,25 @@ def tryck_på_valfri_tangent():
     print ("\n")
 
 # Funktion som låter spelaren välja ett vapen till sin gladiator innan spelet startar.
-def välj_vapen(vapen):
+def välj_vapen(vapen, modifiering_träffchans_lasso):
     print ("\n\n" + Fore.BLUE + "GLADIATORERNA" + Style.RESET_ALL)
     print (Fore.YELLOW + "=============" + Style.RESET_ALL)
     print ("Du är gladiatorn " + Fore.GREEN + "Rikke" + Style.RESET_ALL + ", nu ska du slåss mot gladiatorn " + Fore.RED + "Postumius.\n" + Style.RESET_ALL)
     print ("Innan striden kan börja behöver du välja ditt vapen.")
-    print ("1. Kortsvärd (Ger +1 skada)")
-    print ("2. Lasso (fångar spelaren en runda)")
+    print ("1. Kortsvärd (ger extra skada)")
+    print ("2. Lasso (fångar din fiende)")
 
     vapenval_pågår = True 
 
     while (vapenval_pågår):
-        val_av_vapen = input("\nVad väljer du? ")
+        val_av_vapen = input("\nVad väljer du? ").lower()
     
-        if (val_av_vapen == "1"):
+        if (val_av_vapen == "1" or val_av_vapen == "kortsvärd"):
             vapen = "kortsvärd"
             vapenval_pågår = False
-        elif (val_av_vapen == "2"):    
+        elif (val_av_vapen == "2" or val_av_vapen == "lasso"):    
             vapen = "lasso"
+            modifiering_träffchans_lasso = -2
             vapenval_pågår = False
         else:
             print ("Ogiltigt val. Välj igen.")
@@ -198,16 +266,16 @@ def välj_vapen(vapen):
     tryck_på_valfri_tangent()
 
     # Uppdaterar variabeln vapen med det vapen som spelaren valde
-    return vapen
+    return vapen, modifiering_träffchans_lasso
 
 
 ### INTRO TILL SPELET ###
 
 # Spelaren får välja ett vapen till sin gladiator
-välj_vapen(vapen)
+vapen, modifiering_träffchans_lasso = välj_vapen(vapen, modifiering_träffchans_lasso)
 
 # Visar introtexten till spelet
-visa_introtext()
+visa_introtext(vapen)
 
 
 ### STRIDEN BÖRJAR HÄR ###
@@ -217,7 +285,18 @@ while (strid_pågår):
     
     # Visa vilken runda det är och uppdatera den
     runda = visa_och_uppdatera_rundan(runda)
-        
+
+    # Visa om fienden är fångad av lasso + uppdatera räknaren
+    if (lasso_räknare > 0):
+        print ("\nDin fiende är fortfarande fångad av lassot.")
+        lasso_räknare = lasso_räknare - 1
+    elif (lasso_räknare == 0):
+        print ("\nDin fiende bryter sig loss ur lassot men du plockar snabbt upp det igen.")
+        lasso_räknare = -1
+        fiende_fångad = False
+        modifiering_träffchans_lasso = 0
+        skada_lasso = 0
+
     # Visa antal hälsopoäng som spelaren och fienden har
     visa_hälsopoäng()
 
@@ -228,15 +307,17 @@ while (strid_pågår):
     ### SPELAREN ATTACKERAR! ###
 
     # Se vad spelaren väljer att göra och uppdatera fiendens_hp baserat på resultatet
-    fiendens_hp = spelaren_väljer(fiendens_hp) 
+    fiendens_hp, fiende_fångad, modifiering_träffchans_lasso, skada_lasso, lasso_räknare = spelaren_väljer(fiendens_hp, fiende_fångad, modifiering_träffchans_lasso, skada_lasso, lasso_räknare)
 
     
     ### FIENDEN ATTACKERAR! ###
 
     # Se vad fienden väljer att göra och uppdatera spelarens_hp baserat på resultatet
-    spelarens_hp = fienden_väljer(spelarens_hp)
-    
-    
+    if (fiende_fångad == False):
+        spelarens_hp = fienden_väljer(spelarens_hp)
+    elif (fiende_fångad == True):
+        print ("Din fiende är fångad och kan inte attackera denna runda.\n")
+
     ### SKA STRIDEN AVSLUTAS? ###
 
     # Kontrollerar om det är dags att avsluta striden
