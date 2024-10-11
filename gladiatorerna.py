@@ -265,7 +265,7 @@ def välj_vapen(vapen, modifiering_träffchans_lasso):
     
     tryck_på_valfri_tangent()
 
-    # Uppdaterar variabeln vapen med det vapen som spelaren valde
+    # Uppdaterar variablerna med nya värden
     return vapen, modifiering_träffchans_lasso
 
 
