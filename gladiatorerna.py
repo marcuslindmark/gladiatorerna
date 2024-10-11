@@ -1,8 +1,12 @@
 import random, colorama, msvcrt
 from colorama import Fore, Style
+from rundan import Runda  # Importerar klassen Runda från filen rundan.py som jag skapat själv.
 
 # Initierar colorama (speciellt viktigt på Windows)
 colorama.init()
+
+# Skapa en instans av klassen Runda (som finns i filen rundan.py)
+spelets_runda = Runda()
 
 ### VARIABLER I SPELET ###
 
@@ -47,7 +51,7 @@ lasso_räknare = -1                      # Håller reda på hur många rundor so
 # Övrigt
 ogiltigt_val = False
 strid_pågår = True
-runda = 1
+# runda = 1 (behövs inte längre då detta är flyttat till klassen Runda)
 
 
 ### FUNKTIONER ###
@@ -207,11 +211,11 @@ def visa_introtext(vapen):
     tryck_på_valfri_tangent()
 
 
-# Funktion som visar och uppdaterar rundan
-def visa_och_uppdatera_rundan(runda):
-    print (Fore.RED + "Ni spelar runda nummer " + Fore.YELLOW + str(runda) + Style.RESET_ALL + ".")
-    runda = runda + 1
-    return runda
+# Funktion som visar och uppdaterar rundan (behövs inte längre då detta är flyttat till klassen rundan)
+# def visa_och_uppdatera_rundan(runda):
+#    print (Fore.RED + "Ni spelar runda nummer " + Fore.YELLOW + str(runda) + Style.RESET_ALL + ".")
+#    runda = runda + 1
+#    return runda
 
 # Funktion som visar spelarens och fiendens kvarvarande hälsopoäng
 def visa_hälsopoäng():
@@ -283,8 +287,8 @@ visa_introtext(vapen)
 while (strid_pågår):
     ### VISA STATUS I STRIDEN ###
     
-    # Visa vilken runda det är och uppdatera den
-    runda = visa_och_uppdatera_rundan(runda)
+    # Använder klassen Runda för att Visa vilken runda det är och uppdatera den
+    runda = spelets_runda.visa_och_uppdatera()
 
     # Visa om fienden är fångad av lasso + uppdatera räknaren
     if (lasso_räknare > 0):
