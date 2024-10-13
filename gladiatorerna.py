@@ -51,7 +51,6 @@ lasso_räknare = -1                      # Håller reda på hur många rundor so
 # Övrigt
 ogiltigt_val = False
 strid_pågår = True
-# runda = 1 (behövs inte längre då detta är flyttat till klassen Runda)
 
 
 ### FUNKTIONER ###
@@ -161,15 +160,23 @@ def spelaren_väljer(fiendens_hp, fiende_fångad, modifiering_träffchans_lasso,
             if (T10 <= SPELARENS_TRÄFFCHANS + MODIFIERING_TRÄFFCHANS_KORTSVÄRD + modifiering_träffchans_lasso):
                 print ("Och träffar!")
 
-                # Beräknar skadan och berättar för spelaren vad som händer
+                # Beräknar skadan från kortsvärdet
                 skada_kortsvärd = random.choice(SKADA_KORTSVÄRD)
+                
+                # Drar av skadan från kortsvärdet från fiendens hälsopoäng.
+                fiendens_hp = fiendens_hp - skada_kortsvärd
+                
+                # Berättar för spelaren vad som händer
                 print (f"Du gör {skada_kortsvärd} hälsopoäng i skada.")
- 
+
                 # Om fienden är fångad av ett lasso tar den extra skada
                 if fiende_fångad == True:
                     print (f"Eftersom fienden är fångad fick den {skada_lasso} extra i skada.")
+                    
+                    # Drar av den extra skadan från lassot
+                    fiendens_hp = fiendens_hp + skada_lasso
 
-                fiendens_hp = fiendens_hp - (skada_kortsvärd + skada_lasso)
+                # Berättar hur många hälsopoäng fienden har kvar
                 print (f"Din fiende har nu {fiendens_hp} hälsopoäng kvar.")
             else:
                 print ("Och missar!")
@@ -209,13 +216,6 @@ def visa_introtext(vapen):
     print ("Striden kan börja.")
 
     tryck_på_valfri_tangent()
-
-
-# Funktion som visar och uppdaterar rundan (behövs inte längre då detta är flyttat till klassen rundan)
-# def visa_och_uppdatera_rundan(runda):
-#    print (Fore.RED + "Ni spelar runda nummer " + Fore.YELLOW + str(runda) + Style.RESET_ALL + ".")
-#    runda = runda + 1
-#    return runda
 
 # Funktion som visar spelarens och fiendens kvarvarande hälsopoäng
 def visa_hälsopoäng():
