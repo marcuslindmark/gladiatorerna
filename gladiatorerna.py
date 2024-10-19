@@ -41,6 +41,7 @@ LÄGSTA_SKADA_KORTSVÄRD = 2
 HÖGSTA_SKADA_KORTSVÄRD = 4
 MODIFIERING_TRÄFFCHANS_KORTSVÄRD = -1
 SKADA_KORTSVÄRD = [2, 3, 4]
+blodiga_beskrivningar_kortsvärd = ["Kortsvärdet skär djupt och blodet skvätter!", "Kortsvärdet träffar armen och ger ett tydligt köttsår. Rött blod rinner ut.", "Kortsvärdet skär genom alla skydd och blodsdroppar flyger åt alla håll."]
 
 # Lasso
 fiende_fångad = False                   # Blir True om spelaren träffar med lassot
@@ -51,6 +52,8 @@ lasso_räknare = -1                      # Håller reda på hur många rundor so
 # Övrigt
 ogiltigt_val = False
 strid_pågår = True
+
+
 
 
 ### FUNKTIONER ###
@@ -72,6 +75,9 @@ def fienden_väljer(spelarens_hp):
             print ("Din fiende slår hårt mot dig.") 
             if (T10 <= FIENDENS_TRÄFFCHANS + MODIFIERING_TRÄFFCHANS_JÄRNHÅRD_NÄVE):   
                 print ("Och träffar!")
+                
+                if (blodiga_beskrivningar == True):
+                    print ("Du får en rejäl smäll och du känner blodsmaken i munnen.")
 
                 # Beräknar vad skadan och berättar för spelaren vad som händer
                 skada_järnhård_näve = random.randint(LÄGSTA_SKADA_JÄRNHÅRD_NÄVE, HÖGSTA_SKADA_JÄRNHÅRD_NÄVE)
@@ -85,6 +91,9 @@ def fienden_väljer(spelarens_hp):
             print ("Din fiende skickar iväg en snabb spark mot dig.")
             if (T10 <= FIENDENS_TRÄFFCHANS + MODIFIERING_TRÄFFCHANS_KVICK_SPARK):
                 print ("Och träffar!")
+
+                if (blodiga_beskrivningar == True):
+                    print ("Sparken träffar hårt och du kvider av smärta.")
 
                 # Beräknar vad skadan och berättar för spelaren vad som händer
                 skada_kvick_spark = random.randint(LÄGSTA_SKADA_KVICK_SPARK, HÖGSTA_SKADA_KVICK_SPARK)
@@ -120,6 +129,8 @@ def spelaren_väljer(fiendens_hp, fiende_fångad, modifiering_träffchans_lasso,
 
             if (T10 <= SPELARENS_TRÄFFCHANS + MODIFIERING_TRÄFFCHANS_JÄRNHÅRD_NÄVE + modifiering_träffchans_lasso):   
                 print ("Och träffar!")
+                if (blodiga_beskrivningar == True):
+                    print ("Blodet skvätter från hans näsa och mun. Ser ut att göra ont!")
 
                 # Beräknar skadan och berättar för spelaren vad som händer
                 skada_järnhård_näve = random.randint(LÄGSTA_SKADA_JÄRNHÅRD_NÄVE, HÖGSTA_SKADA_JÄRNHÅRD_NÄVE)
@@ -140,7 +151,9 @@ def spelaren_väljer(fiendens_hp, fiende_fångad, modifiering_träffchans_lasso,
             
             if (T10 <= SPELARENS_TRÄFFCHANS + MODIFIERING_TRÄFFCHANS_KVICK_SPARK + modifiering_träffchans_lasso):
                 print ("Och träffar!")
-
+                if (blodiga_beskrivningar == True):
+                    print ("Din motståndare kvider av smärta när din spark tränger djupt in i hans mage.")
+                
                 # Beräknar skadan och berättar för spelaren vad som händer
                 skada_kvick_spark = random.randint(LÄGSTA_SKADA_KVICK_SPARK, HÖGSTA_SKADA_KVICK_SPARK)
                 print (f"Du gör {skada_kvick_spark} hälsopoäng i skada.")
@@ -159,6 +172,9 @@ def spelaren_väljer(fiendens_hp, fiende_fångad, modifiering_träffchans_lasso,
             print ("\nDu hugger med ditt kortsvärd.")
             if (T10 <= SPELARENS_TRÄFFCHANS + MODIFIERING_TRÄFFCHANS_KORTSVÄRD + modifiering_träffchans_lasso):
                 print ("Och träffar!")
+                if (blodiga_beskrivningar == True):
+                    blodsbeskrivning_kortsvärd = random.choice(blodiga_beskrivningar_kortsvärd)
+                    print (blodsbeskrivning_kortsvärd)
 
                 # Beräknar skadan från kortsvärdet
                 skada_kortsvärd = random.choice(SKADA_KORTSVÄRD)
@@ -243,9 +259,6 @@ def tryck_på_valfri_tangent():
 
 # Funktion som låter spelaren välja ett vapen till sin gladiator innan spelet startar.
 def välj_vapen(vapen, modifiering_träffchans_lasso):
-    print ("\n\n" + Fore.BLUE + "GLADIATORERNA" + Style.RESET_ALL)
-    print (Fore.YELLOW + "=============" + Style.RESET_ALL)
-    print ("Du är gladiatorn " + Fore.GREEN + "Rikke" + Style.RESET_ALL + ", nu ska du slåss mot gladiatorn " + Fore.RED + "Postumius.\n" + Style.RESET_ALL)
     print ("Innan striden kan börja behöver du välja ditt vapen.")
     print ("1. Kortsvärd (ger extra skada)")
     print ("2. Lasso (fångar din fiende)")
@@ -274,6 +287,30 @@ def välj_vapen(vapen, modifiering_träffchans_lasso):
 
 
 ### INTRO TILL SPELET ###
+
+# Introtext
+print ("\n\n" + Fore.BLUE + "GLADIATORERNA" + Style.RESET_ALL)
+print (Fore.YELLOW + "=============" + Style.RESET_ALL)
+print ("Du är gladiatorn " + Fore.GREEN + "Rikke" + Style.RESET_ALL + ", nu ska du slåss mot gladiatorn " + Fore.RED + "Postumius.\n" + Style.RESET_ALL)
+
+# Spelaren får välja om den vill se blodiga beskrivningar i spelet
+menyval_pågår = True
+
+while (menyval_pågår):
+    svar_blodbeskrivningar = input ("Vill du se beskrivningar med mycket blod i spelet (ja/nej)? ").lower()
+
+    if (svar_blodbeskrivningar == "ja"):
+        blodiga_beskrivningar = True
+        print ("Du valde att få se blodiga beskrivningar i spelet.")
+        tryck_på_valfri_tangent()
+        menyval_pågår = False
+    elif (svar_blodbeskrivningar == "nej"):
+        blodiga_beskrivningar = False
+        print ("Du vill inte få se blodiga beskrivningar i spelet.")
+        tryck_på_valfri_tangent()
+        menyval_pågår = False
+    else:
+        print ("Ogiltigt val. Välj igen!\n")
 
 # Spelaren får välja ett vapen till sin gladiator
 vapen, modifiering_träffchans_lasso = välj_vapen(vapen, modifiering_träffchans_lasso)
