@@ -21,3 +21,5 @@ class Runda:
         
         # Vi uppdaterar rundan genom att öka värdet med 1 för att förbereda för nästa omgång.
         self.runda = self.runda + 1  
+
+        return self.runda - 1  # Returnera det aktuella rundnumret innan det uppdateras
