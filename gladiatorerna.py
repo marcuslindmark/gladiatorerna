@@ -1,6 +1,7 @@
 import random, colorama, msvcrt
 from colorama import Fore, Style
 from rundan import Runda  # Importerar klassen Runda från filen rundan.py som jag skapat själv.
+import os
 
 # Initierar colorama (speciellt viktigt på Windows)
 colorama.init()
@@ -78,6 +79,47 @@ strid_pågår = True
 
 ### FUNKTIONER ###
 
+### ASCII GRAFIK ###
+def show_art_grim_reaper():
+    print (r'''
+      .-.
+     (o.o)
+      |=|
+     __|__
+   //.=|=.\\
+  // .=|=. \\
+  \\ .=|=. //
+   \\(_=_)//
+    (:| |:)
+     || ||
+     () ()
+     || ||
+     || ||
+l42 ==' '==
+''')
+
+def show_art_dices():
+    print (r'''Art by Morfina
+               (( _______
+     _______     /\O    O\
+    /O     /\   /  \      \
+   /   O  /O \ / O  \O____O\ ))
+((/_____O/    \\    /O     /
+  \O    O\    / \  /   O  /
+   \O    O\ O/   \/_____O/
+    \O____O\/ )) mrf      ))
+  ((''')
+
+### RENSA SKÄRMEN ###
+# Funktion som använder os modulen för att rensa skärmen.
+def clear_screen():
+    # Om Windows är operativsystemet körs det första kommandot
+    if os.name == 'nt':
+        os.system('cls')
+    else:                   
+        os.system('clear')          # För Mac eller Linux körs istället clear
+
+
 ### VÄLJA VAPEN ###
 # Funktion som låter spelaren välja ett vapen till sin gladiator innan spelet startar.
 def välj_vapen(vapen, modifiering_träffchans_lasso):
@@ -149,6 +191,9 @@ def spelaren_väljer(fiendens_hp, fiende_fångad, modifiering_träffchans_lasso,
     while ogiltigt_val == True:
         # Spelaren får välja attack.
         spelarens_val = input ("\nVilken attack väljer du? ").lower()
+
+        # Anropa funktionen för att rensa skärmen
+        clear_screen()
 
         # Slumpar ett tal mellan 1 och 10
         T10 = random.randint(1, 10)    
@@ -291,6 +336,7 @@ def spelaren_väljer(fiendens_hp, fiende_fångad, modifiering_träffchans_lasso,
         
         else:
             print ("Ogiltigt val.")
+            visa_tillgängliga_attacker()
             ogiltigt_val = True
 
     tryck_på_valfri_tangent()
@@ -368,15 +414,20 @@ def visa_hälsopoäng():
 def tryck_på_valfri_tangent():            
     print("\nTryck på valfri tangent för att fortsätta...")
     msvcrt.getch()  # Väntar på att användaren trycker på en tangent
-    print ("\n")
+    
+    # Anropa funktionen för att rensa skärmen
+    clear_screen()
 
 
 ### ---------------------- INTROT OCH MENYN BÖRJAR HÄR --------------------------------- ###
 
 ### INTRO TILL SPELET ###
 
+# Anropa funktionen för att rensa skärmen
+clear_screen()
+
 # Introtext
-print ("\n\n" + Fore.BLUE + "GLADIATORERNA" + Style.RESET_ALL)
+print ("" + Fore.BLUE + "GLADIATORERNA" + Style.RESET_ALL)
 print (Fore.YELLOW + "=============" + Style.RESET_ALL)
 print ("Du är gladiatorn " + Fore.GREEN + "Rikke" + Style.RESET_ALL + ", nu ska du slåss mot gladiatorn " + Fore.RED + "Postumius.\n" + Style.RESET_ALL)
 
@@ -485,8 +536,11 @@ while (strid_pågår):
             risk = 0.10  # 10 % risk
         
         print (f"Låt oss kasta en 100 sidig tärning för att se hur det går...")
+        tryck_på_valfri_tangent()
+        
+        show_art_dices()
         print(f"Tärningen visar {slumptal * 100:.0f} och risken för att bli utröstad var {risk * 100:.0f}%.")
-
+        tryck_på_valfri_tangent()
 
         if (slumptal < risk):
             print ("\nDu blev utröstad. Publiken hatar dig och buar.")
@@ -508,6 +562,8 @@ while (strid_pågår):
 # Slut meddelande
 if (spelarens_hp <= 0):
     print ("Du förlorade striden. Bättre lycka nästa gång.")
+    tryck_på_valfri_tangent()
+    show_art_grim_reaper()
 elif (fiendens_hp <= 0):
     print ("Din fiende förlorade striden. Grattis du vann.")
 
