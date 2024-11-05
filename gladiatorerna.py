@@ -11,6 +11,10 @@ spelets_runda = Runda()
 
 ### VARIABLER I SPELET ###
 
+# Personligt
+namn = "Rikke"
+kön = "man"
+
 # Håller reda på olika slumptal
 slumptal = 0
 
@@ -69,6 +73,7 @@ LÄGSTA_OMTYCKTHET_VAPENUPPVISNING = 3
 HÖGSTA_OMTYCKTHET_VAPENUPPVISNING = 5
 VAPENUPPVISNING_OMTYCKTHET = [4, 5, 6]
 spelarens_omtyckthet = 0
+INGET_VAPEN_BONUS = 5
 
 # Övrigt
 ogiltigt_val = False
@@ -120,13 +125,47 @@ def clear_screen():
         os.system('clear')          # För Mac eller Linux körs istället clear
 
 
+### PERSONLIGT ###
+# Funktion som låter spelaren välja namn
+def välj_namn(namn):
+    väljer_namn = True
+    while (väljer_namn == True):
+
+        svar = input(f"Just nu heter du {namn}, är du nöjd med det namnet(ja/nej)? ").lower()
+        if (svar == "ja"):
+            print ("Du är nöjd med ditt namn.")
+            väljer_namn = False
+        elif (svar == "nej"):
+            namn = input ("Vad vill du heta istället? ")
+            print (f"Var hälsad {namn}!")
+            väljer_namn = False
+        else:
+            print ("Ogiltigt val. Skriv ja eller nej.")
+    return namn
+
+# Funktion som låter spelaren välja kön.
+def välj_kön(kön):
+    väljer_kön = True
+    while (väljer_kön == True):
+
+        kön = input ("Är du en gladiator (man), eller en gladiatrix (kvinna)? ").lower()    
+        if (kön == "man"):
+            print ("Du är en man och en gladiator.")
+            väljer_kön = False
+        elif (kön == "kvinna"):
+            print ("Du är en kvinna och en gladiatrix.")
+            väljer_kön = False
+        else:
+            print ("Ogiltigt val. I det här spelet kan du bara vara man eller kvinna.")
+    return kön
+
 ### VÄLJA VAPEN ###
 # Funktion som låter spelaren välja ett vapen till sin gladiator innan spelet startar.
-def välj_vapen(vapen, modifiering_träffchans_lasso):
+def välj_vapen(vapen, modifiering_träffchans_lasso, spelarens_omtyckthet):
     print ("Innan striden kan börja behöver du välja ditt vapen.")
     print ("1. Kortsvärd (ger extra skada)")
     print ("2. Lasso (fångar din fiende)")
-    print ("3. Inget vapen jag slåss med min muskulösa kropp!")
+    print ("3. Jag slåss med min vältränade kropp! (ökar din omtyckthet)")
     vapenval_pågår = True 
 
     while (vapenval_pågår):
@@ -140,9 +179,9 @@ def välj_vapen(vapen, modifiering_träffchans_lasso):
             modifiering_träffchans_lasso = -2
             vapenval_pågår = False
         elif (val_av_vapen == "3" or val_av_vapen == "inget vapen"):
-            vapen = "inget vapen"
+            vapen = "en vältränad kropp"
             vapenval_pågår = False
-        
+            spelarens_omtyckthet = spelarens_omtyckthet + INGET_VAPEN_BONUS
         else:
             print ("Ogiltigt val. Välj igen.")
 
@@ -151,16 +190,26 @@ def välj_vapen(vapen, modifiering_träffchans_lasso):
     tryck_på_valfri_tangent()
 
     # Uppdaterar variablerna med nya värden
-    return vapen, modifiering_träffchans_lasso
+    return vapen, modifiering_träffchans_lasso, spelarens_omtyckthet
 
 
 ### INTROTEXT ###
 # Funktion som visar en introtext
 def visa_introtext(vapen):
+    if (kön == "kvinna"):
+        print (f"Ditt namn är {namn} och du är en mäktig kvinnlig Gladiatrix.")
+    else:
+        print (f"Ditt namn är {namn} och du är en mäktig manlig Gladiator.")
+    
     print ("Ni befinner er på en romersk arena omgivna av en förväntansfull publik")
-    print (f"I din hand har du vapnet {vapen}. Du är klädd i ett par")
+    print (f"Med dig in i striden har du vapnet {vapen}. Du är klädd i ett par")
     print ("korta läderbyxor, ett par pälsstövlar och armband gjorda av läder.")
-    print ("Din bara bronsfärgade bringa lyses upp av den starka solen.")
+    
+    if (kön == "kvinna"):
+        print ("Dina bröst täcks endast av en grovt sydd bröstbindel av djurpäls.")
+    else:
+        print ("Din bara bronsfärgade bringa lyses upp av den starka solen.")
+    
     print ("Publiken som sitter runt omkring er ser förväntansfulla ut.")
     print ("Postemius ser ut att göra sig redo att gå till anfall.")
     print ("Striden kan börja.")
@@ -172,13 +221,13 @@ def visa_introtext(vapen):
 # Funktion som berättar vilka handlingar det är som spelaren kan göra
 def visa_tillgängliga_attacker():    
     print ("\nDu har följande handlingar:")
-    print (f"1. Järnhård näve: gör mellan {LÄGSTA_SKADA_JÄRNHÅRD_NÄVE} och {HÖGSTA_SKADA_JÄRNHÅRD_NÄVE} i skada. Träffchansen är {SPELARENS_TRÄFFCHANS + MODIFIERING_TRÄFFCHANS_JÄRNHÅRD_NÄVE + modifiering_träffchans_lasso} av 10.")
-    print (f"2. Kvick spark: gör mellan {LÄGSTA_SKADA_KVICK_SPARK} och {HÖGSTA_SKADA_KVICK_SPARK} i skada. Träffchansen är {SPELARENS_TRÄFFCHANS + MODIFIERING_TRÄFFCHANS_KVICK_SPARK + modifiering_träffchans_lasso} av 10.")
+    print (f"1. Järnhård näve: gör mellan {LÄGSTA_SKADA_JÄRNHÅRD_NÄVE} och {HÖGSTA_SKADA_JÄRNHÅRD_NÄVE} i skada. Träffchansen är {SPELARENS_TRÄFFCHANS + MODIFIERING_TRÄFFCHANS_JÄRNHÅRD_NÄVE + modifiering_träffchans_lasso} av 10. Vid träff ändras din omtyckthet med {OMTYCKTHET_JÄRNHÅRD_NÄVE} poäng.")
+    print (f"2. Kvick spark: gör mellan {LÄGSTA_SKADA_KVICK_SPARK} och {HÖGSTA_SKADA_KVICK_SPARK} i skada. Träffchansen är {SPELARENS_TRÄFFCHANS + MODIFIERING_TRÄFFCHANS_KVICK_SPARK + modifiering_träffchans_lasso} av 10. Vid träff ändras din omtyckthet med {OMTYCKTHET_KVICK_SPARK} poäng.")
     print (f"3. Uppvisning med vapen: gör ingen skada, men ökar din omtyckthet hos publiken med mellan 3 och 5 poäng.")
     if (vapen == "kortsvärd"):
-        print (f"4. Kortsvärd: gör mellan {LÄGSTA_SKADA_KORTSVÄRD} och {HÖGSTA_SKADA_KORTSVÄRD} i skada. Träffchansen är {SPELARENS_TRÄFFCHANS + MODIFIERING_TRÄFFCHANS_KORTSVÄRD + modifiering_träffchans_lasso} av 10.")
+        print (f"4. Kortsvärd: gör mellan {LÄGSTA_SKADA_KORTSVÄRD} och {HÖGSTA_SKADA_KORTSVÄRD} i skada. Träffchansen är {SPELARENS_TRÄFFCHANS + MODIFIERING_TRÄFFCHANS_KORTSVÄRD + modifiering_träffchans_lasso} av 10. Vid träff ändras din omtyckthet med {OMTYCKTHET_KORTSVÄRD} poäng.")
     elif (vapen == "lasso" and fiende_fångad == False):
-        print (f"4. Lasso: fångar in din motståndare och ökar din träffchans och skada så länge som fienden är fångad.")
+        print (f"4. Lasso: fångar in din motståndare och ökar din träffchans och skada så länge som fienden är fångad. Vid träff ändras din omtyckthet med {OMTYCKTHET_LASSO} poäng.")
     
     if (fiende_fångad == True):
                 print (f"Eftersom fienden är insnärjd i ditt lasso ökar din träffchans med {modifiering_träffchans_lasso}.")
@@ -256,7 +305,7 @@ def spelaren_väljer(fiendens_hp, fiende_fångad, modifiering_träffchans_lasso,
                 print ("Och missar!")
         ### UPPVISNING MED VAPEN ###
         elif (spelarens_val == "uppvisning" or spelarens_val == "uppvisning med vapen" or spelarens_val == "3"):
-            if (vapen == "inget vapen"):
+            if (vapen == "en vältränad kropp"):
                 print ("Eftersom du inte bär något vapen att ha uppvisning med") 
                 print ("ställer du dig och spänner dina muskler istället.")
                 print (f"Din omtyckthet var {spelarens_omtyckthet}.")
@@ -430,6 +479,11 @@ clear_screen()
 print ("" + Fore.BLUE + "GLADIATORERNA" + Style.RESET_ALL)
 print (Fore.YELLOW + "=============" + Style.RESET_ALL)
 print ("Du är gladiatorn " + Fore.GREEN + "Rikke" + Style.RESET_ALL + ", nu ska du slåss mot gladiatorn " + Fore.RED + "Postumius.\n" + Style.RESET_ALL)
+print ("Eller är du verkligen det...?")
+
+namn = välj_namn(namn)
+
+kön = välj_kön(kön)
 
 # Spelaren får välja om den vill se blodiga beskrivningar i spelet
 menyval_pågår = True
@@ -451,7 +505,7 @@ while (menyval_pågår):
         print ("Ogiltigt val. Välj igen!\n")
 
 # Spelaren får välja ett vapen till sin gladiator
-vapen, modifiering_träffchans_lasso = välj_vapen(vapen, modifiering_träffchans_lasso)
+vapen, modifiering_träffchans_lasso, spelarens_omtyckthet = välj_vapen(vapen, modifiering_träffchans_lasso, spelarens_omtyckthet)
 
 # Visar introtexten till spelet
 visa_introtext(vapen)
